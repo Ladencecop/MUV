@@ -1,0 +1,45 @@
+:root {
+  /* 取景框与层次 */
+  --c-surface: #14171c;
+  --c-surface-raised: #1c2027;
+  --c-border: #2b3038;
+
+  /* 文字与数值 */
+  --c-primary: #cdd6e0;
+  --c-text-muted: #6b7480;
+  --c-affection: #8fb8d8;
+
+  /* 语义警示 */
+  --c-danger: #e5484d;
+  --c-warning: #d9a441;
+
+  /* 解冻（关系状态 3 起启用） */
+  --c-thaw: #e8d5c4;
+
+  /* 关系状态档位色阶 */
+  --c-stage-0: #4a525c;
+  --c-stage-1: #67757f;
+  --c-stage-2: #8fb8d8;
+  --c-stage-3: #b9a9c9;
+  --c-stage-4: #e8d5c4;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+body {
+  font-family:
+    'Sarasa Gothic SC', '更纱黑体 SC', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--c-primary);
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  padding: 4px 0;
+}

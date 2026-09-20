@@ -1,0 +1,137 @@
+:root {
+  /* 表层与分隔 */
+  --c-surface: #0e1216;
+  --c-surface-raised: #171d24;
+  --c-border: #262e37;
+
+  /* 文字与数值 */
+  --c-primary: #d3dbe4;
+  --c-text-muted: #7d8894;
+
+  /* 角色主色：淡薄荷体香，同时承载心动感 */
+  --c-accent: #6fd3b4;
+
+  /* 忠诚度（专一度，不等于好感度） */
+  --c-loyalty: #8fb0d8;
+
+  /* 情欲与体液 */
+  --c-arousal: #d2568f;
+
+  /* 生理周期四阶段 */
+  --c-phase-follicular: #6fd3b4;
+  --c-phase-ovulation: #d2568f;
+  --c-phase-luteal: #c9a35e;
+  --c-phase-menstrual: #c96a7e;
+
+  /* 梦境选球 */
+  --c-dream-gold: #d8a940;
+  --c-dream-violet: #a884e0;
+
+  /* 狂欢节 */
+  --c-festival: #c06cf0;
+
+  /* 警示 */
+  --c-warning: #d9a441;
+  --c-danger: #e0545f;
+
+  /* 关系阶段色阶 */
+  --c-stage-0: #7b8794;
+  --c-stage-1: #8fb0d8;
+  --c-stage-2: #6fd3b4;
+  --c-stage-3: #b08ad6;
+  --c-stage-4: #f0e2d0;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+body {
+  font-family:
+    'Sarasa Gothic SC', '更纱黑体 SC', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--c-primary);
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  padding: 4px 0;
+}
+
+/* ── 各子组件共用的数据块骨架 ───────────────────────────────── */
+
+.sb-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sb-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--c-text-muted);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.sb-head .sb-note {
+  margin-left: auto;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
+}
+
+.sb-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 5px 10px;
+  margin: 0;
+}
+
+.sb-facts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.sb-facts dt {
+  color: var(--c-text-muted);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.sb-facts dd {
+  margin: 0;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  word-break: break-word;
+}
+
+.sb-bar {
+  position: relative;
+  flex: 1 1 auto;
+  height: 4px;
+  background: var(--c-border);
+  overflow: hidden;
+}
+
+.sb-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  transition: width 240ms ease;
+}
+
+.sb-empty {
+  margin: 0;
+  color: var(--c-text-muted);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}

@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "世界": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "当前时间": {
+          "default": "2026/09/21-02:15",
+          "type": "string",
+          "pattern": "^\\d{4}\\/\\d{2}\\/\\d{2}-\\d{2}:\\d{2}$"
+        },
+        "当前地点": {
+          "default": "别墅客厅",
+          "type": "string",
+          "enum": [
+            "别墅客厅",
+            "别墅厨房",
+            "别墅餐厅",
+            "客厅地毯",
+            "别墅游戏室",
+            "别墅书房",
+            "别墅客房",
+            "别墅主卧",
+            "别墅地下室",
+            "别墅庭院",
+            "山城中心区",
+            "山城西区",
+            "山城北区",
+            "山城南区",
+            "山城东区",
+            "其他"
+          ]
+        },
+        "天气": {
+          "default": "晴",
+          "type": "string",
+          "enum": [
+            "晴",
+            "多云",
+            "阴",
+            "小雨",
+            "大雨",
+            "雪"
+          ]
+        },
+        "狂欢节进行中": {
+          "default": false,
+          "type": "boolean"
+        },
+        "狂欢节模式": {
+          "default": "年度",
+          "type": "string",
+          "enum": [
+            "年度",
+            "追加"
+          ]
+        }
+      }
+    },
+    "千羽": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "忠诚度": {
+          "default": 90,
+          "type": "number"
+        },
+        "梦境选择": {
+          "default": "未经历",
+          "type": "string",
+          "enum": [
+            "未经历",
+            "金色",
+            "紫色"
+          ]
+        },
+        "生理周期": {
+          "description": "4 天一轮的生理周期；两个字段均由脚本维护，AI 不更新",
+          "default": {},
+          "$ref": "#/$defs/__schema0"
+        },
+        "怀孕": {
+          "description": "怀孕概率、胚胎数量与体内精液明细清单",
+          "default": {},
+          "$ref": "#/$defs/__schema2"
+        },
+        "性经验": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "口交": {
+              "default": {},
+              "type": "object",
+              "properties": {
+                "接收方": {
+                  "default": 0,
+                  "type": "number"
+                },
+                "服务方": {
+                  "default": 0,
+                  "type": "number"
+                }
+              }
+            },
+            "性交": {
+              "default": 0,
+              "type": "number"
+            },
+            "肛交": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        },
+        "关系阶段": {
+          "default": 0,
+          "type": "number"
+        },
+        "心动感": {
+          "default": 65,
+          "type": "number"
+        },
+        "身体状态": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "发情度": {
+              "default": 0,
+              "type": "number"
+            },
+            "湿润度": {
+              "default": 0,
+              "type": "number"
+            },
+            "高潮次数": {
+              "description": "当前这场性事内的高潮次数，新场景重置",
+              "default": 0,
+              "$ref": "#/$defs/__schema4"
+            },
+            "体力": {
+              "default": 100,
+              "type": "number"
+            },
+            "当前穿着": {
+              "default": "全裸",
+              "type": "string"
+            },
+            "体内精液量": {
+              "description": "单位 ml；由 千羽.怀孕.体内精液 汇总而来的展示值",
+              "default": 0,
+              "$ref": "#/$defs/__schema5"
+            }
+          }
+        }
+      }
+    },
+    "玩家": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "领证妻室": {
+          "description": "已领证的妻室名单；长度不得超过 3",
+          "$ref": "#/$defs/__schema6"
+        },
+        "_剩余名额": {
+          "default": 2,
+          "type": "number"
+        },
+        "黑道身份暴露": {
+          "description": "记录 <user> 与黑道联系的知情范围，不解释原因",
+          "default": "千羽诸葛羽已知",
+          "$ref": "#/$defs/__schema7"
+        }
+      }
+    },
+    "剧情": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "当前阶段目标": {
+          "description": "当前叙事的主要待推进目标，由 AI 依关系阶段、心动感与近期事件维护",
+          "default": "推进与千羽的日常相处",
+          "$ref": "#/$defs/__schema8"
+        },
+        "关键事件记录": {
+          "description": "已发生的重大节点标记，如 领证搬入别墅 / 首次性交 / 梦境首次选择 / 说出真心话",
+          "default": [],
+          "$ref": "#/$defs/__schema9"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "__schema0": {
+      "type": "object",
+      "properties": {
+        "_周期天数": {
+          "default": 1,
+          "type": "number"
+        },
+        "_生理期阶段": {
+          "description": "由脚本按 _周期天数 派生：1=卵泡期、2=排卵期、3=黄体期、4=月经期",
+          "default": "卵泡期",
+          "$ref": "#/$defs/__schema1"
+        }
+      }
+    },
+    "__schema1": {
+      "type": "string",
+      "enum": [
+        "卵泡期",
+        "排卵期",
+        "黄体期",
+        "月经期"
+      ]
+    },
+    "__schema2": {
+      "type": "object",
+      "properties": {
+        "怀孕概率": {
+          "default": 0,
+          "type": "number"
+        },
+        "胚胎数量": {
+          "default": 0,
+          "type": "number"
+        },
+        "体内精液": {
+          "description": "逐条精液记录；键为唯一标识，值含 时间 / 毫升数 / 生理期阶段 / 是否入子宫",
+          "default": {},
+          "$ref": "#/$defs/__schema3"
+        }
+      }
+    },
+    "__schema3": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "时间": {
+            "default": "0000/00/00-00:00",
+            "type": "string",
+            "pattern": "^\\d{4}\\/\\d{2}\\/\\d{2}-\\d{2}:\\d{2}$"
+          },
+          "毫升数": {
+            "default": 0,
+            "type": "number"
+          },
+          "生理期阶段": {
+            "default": "卵泡期",
+            "type": "string",
+            "enum": [
+              "卵泡期",
+              "排卵期",
+              "黄体期",
+              "月经期"
+            ]
+          },
+          "是否入子宫": {
+            "default": false,
+            "type": "boolean"
+          },
+          "$time": {
+            "default": 1789928118018,
+            "type": "number"
+          }
+        }
+      }
+    },
+    "__schema4": {
+      "type": "number"
+    },
+    "__schema5": {
+      "type": "number"
+    },
+    "__schema6": {
+      "default": [
+        "千羽"
+      ],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "__schema7": {
+      "type": "string",
+      "enum": [
+        "未暴露",
+        "千羽诸葛羽已知",
+        "公开"
+      ]
+    },
+    "__schema8": {
+      "type": "string"
+    },
+    "__schema9": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
