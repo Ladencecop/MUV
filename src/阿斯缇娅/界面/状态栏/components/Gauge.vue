@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { bandOf } from '../constants';
-import { type Tone, widthPct } from '../styles';
+import { type Tone, resolveTone, widthPct } from '../styles';
 
 /**
  * 一条读数。面板里所有 0~100 的数值都走这里，保证仪表读数长得一致。
@@ -34,8 +34,8 @@ const isAlert = computed(() => {
 
 const text = computed(() => `${props.value}${props.unit}`);
 const note = computed(() => props.hint || (props.bands ? bandOf(props.bands, props.value).label : ''));
-/** 告警时统一走 danger，否则用传入的色相 */
-const hue = computed<Tone>(() => (isAlert.value ? 'danger' : props.tone));
+/** 告警时统一走 danger，否则用传入的色相（非法值会被 resolveTone 兜底，不会静默丢色） */
+const hue = computed<Tone>(() => (isAlert.value ? 'danger' : resolveTone(props.tone, 'power')));
 </script>
 
 <template>

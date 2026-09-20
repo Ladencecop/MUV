@@ -112,7 +112,7 @@ const bodyNote = computed(() => BODY_STATE_NOTES[props.bodyState] ?? '');
       </header>
 
       <div class="gauges">
-        <Gauge label="电量" :value="power" tone="var(--c-power)" :threshold="30" :lower="true" />
+        <Gauge label="电量" :value="power" tone="power" :threshold="30" :lower="true" />
         <Gauge label="机体损耗" :value="wear" tone="rust" :threshold="60" :lower="false" />
       </div>
 

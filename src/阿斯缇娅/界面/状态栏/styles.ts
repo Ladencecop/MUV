@@ -10,6 +10,20 @@
 export const TONES = ['power', 'amber', 'rust', 'warm', 'intimacy', 'danger', 'gold', 'muted'] as const;
 export type Tone = (typeof TONES)[number];
 
+/**
+ * 把传入值收敛成合法令牌。
+ *
+ * 存在的理由：色相类名是拼出来的（`fill-${tone}`），一旦传入非法值（例如误写成
+ * `var(--c-power)`），拼出的类名不存在，浏览器只会安静地不画背景色 —— 不报错、不留痕，
+ * 极难发现。这里做一次兜底，非法值退回 `muted` 并在控制台留一条 warn。
+ */
+export function resolveTone(tone: unknown, fallback: Tone = 'muted'): Tone {
+  const t = String(tone ?? '');
+  if ((TONES as readonly string[]).includes(t)) return t as Tone;
+  console.warn(`[阿斯缇娅 状态栏] 非法色相令牌 "${t}"，已回退为 "${fallback}"`);
+  return fallback;
+}
+
 /** 生成一个读数条的类名串 */
 export function toneClass(prefix: string, tone: Tone): string {
   return `${prefix}-${tone}`;
