@@ -7,7 +7,7 @@
       "type": "object",
       "properties": {
         "当前时间": {
-          "default": "2026/09/20-18:38",
+          "default": "2026/09/20-18:53",
           "type": "string",
           "pattern": "^\\d{4}\\/\\d{2}\\/\\d{2}-\\d{2}:\\d{2}$"
         },
@@ -266,7 +266,7 @@
             "type": "boolean"
           },
           "$time": {
-            "default": 1789929539108,
+            "default": 1789930394026,
             "type": "number"
           }
         }
