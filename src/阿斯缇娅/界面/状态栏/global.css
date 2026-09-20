@@ -1,68 +1,72 @@
 :root {
-  /* ── 底面与层次 ─────────────────────────────────────────────── */
-  /* 车体内部的哑光装甲 */
-  --c-surface: #12141a;
-  /* 舱内隔板 */
-  --c-surface-raised: #1a1e26;
-  /* 焊缝与接缝。对 --c-surface 的对比度 ≈ 1.6:1，只作分隔线用 */
-  --c-border: #2b3038;
+  /* ── 钢板与隔板 ─────────────────────────────────────────────── */
+  /* 锈蚀钢板的背光面 */
+  --c-surface: #14110e;
+  /* 舱内隔板的漆面 */
+  --c-surface-raised: #1c1814;
+  /* 仪表盘凹槽，比底色更深一档 */
+  --c-surface-sunken: #0d0b09;
+  /* 钢板焊缝 */
+  --c-border: #3a3128;
+  /* 被反复摩擦发亮的边缘 */
+  --c-border-hot: #5a4a38;
 
-  /* ── 文字 ───────────────────────────────────────────────────── */
-  /* 尘幕透下来的灰白光。对 --c-surface ≈ 11.7:1 */
-  --c-primary: #c9c6bd;
-  /* 舱内背光处的金属。对 --c-surface ≈ 4.6:1，够 AA 小字 */
-  --c-text-muted: #6f7480;
+  /* ── 蚀刻字 ─────────────────────────────────────────────────── */
+  /* 旧军用蚀刻字的骨白。对 --c-surface 约 11.6:1 */
+  --c-primary: #cdc3ad;
+  /* 积灰的读数。对 --c-surface 约 4.6:1，够 AA 小字 */
+  --c-text-muted: #837a69;
 
-  /* ── 能源线：唯一资源数值专用 ────────────────────────────────── */
-  /* 能源舱指示灯的冷蓝 */
-  --c-power: #5aa9d6;
-  /* 亮色版：专供文字，对 --c-surface ≈ 6.5:1 */
-  --c-power-text: #7cc0e6;
+  /* ── 能源舱指示灯 ───────────────────────────────────────────── */
+  --c-power: #4e8fa6;
+  --c-power-text: #6fb3cc;
 
   /* ── 她：琥珀 ───────────────────────────────────────────────── */
-  /* 她眼瞳的琥珀色。关系刻度、她的名字、当前关系阶段 */
-  --c-amber: #d8a24a;
-  --c-amber-text: #e5bb75;
+  /* 她眼瞳的琥珀色 */
+  --c-amber: #c08a3e;
+  --c-amber-text: #dfa856;
 
-  /* ── 生理：暖色 ─────────────────────────────────────────────── */
-  /* 机体过载时的热 */
-  --c-warm: #c96f5a;
-  --c-warm-text: #e09280;
+  /* ── 锈与警示漆 ─────────────────────────────────────────────── */
+  --c-rust: #8f4a2a;
+  --c-rust-text: #c26a3c;
 
-  /* ── 亲密 ───────────────────────────────────────────────────── */
-  /* 亲密的血色 */
-  --c-intimacy: #b8566b;
-  --c-intimacy-text: #d98b9e;
+  /* ── 机体过载的热 ───────────────────────────────────────────── */
+  --c-warm: #8d5b46;
+  --c-warm-text: #bd8064;
 
-  /* ── 警戒 ───────────────────────────────────────────────────── */
-  /* 锈红 */
-  --c-danger: #b8453f;
-  --c-danger-text: #d9706a;
+  /* ── 亲密的血色 ─────────────────────────────────────────────── */
+  --c-intimacy: #8a4a56;
+  --c-intimacy-text: #bc7c88;
 
-  /* ── 关系阶段色阶：暗铁 → 冷灰 → 琥珀 → 亮金 ────────────────── */
-  /* 陌生期最暗，深爱期最亮，明度本身就是「解冻」的进度 */
-  --c-stage-0: #4a5058;
-  --c-stage-1: #6f7480;
-  --c-stage-2: #d8a24a;
-  --c-stage-3: #f0cd82;
+  /* ── 舱内红灯 ───────────────────────────────────────────────── */
+  --c-danger: #8e2f2a;
+  --c-danger-text: #cf6258;
 
-  --c-stage-0-text: #8a919c;
-  --c-stage-1-text: #9aa0ab;
-  --c-stage-2-text: #e5bb75;
-  --c-stage-3-text: #f0cd82;
+  /* ── 战前铭牌的镀层 ─────────────────────────────────────────── */
+  --c-gold: #a8862f;
+  --c-gold-text: #cfae52;
 
-  /* ── 字体 ───────────────────────────────────────────────────── */
-  /* 焊上去的舱门编号：等宽、字距大、不带装饰 */
-  --font-mono: 'Sarasa Mono SC', 'Sarasa Fixed SC', 'Noto Sans Mono SC', ui-monospace, 'Cascadia Mono', Consolas,
-    monospace;
-  /* 战前制式内衬的规整 */
+  /* ── 关系阶段色阶：冷铁 → 灰铜 → 锈金 → 亮金 ────────────────── */
+  /* 明度本身就是「解冻」的进度 */
+  --c-stage-0: #4a443a;
+  --c-stage-1: #7a6b55;
+  --c-stage-2: #c08a3e;
+  --c-stage-3: #e3bd6c;
+
+  --c-stage-0-text: #8c8474;
+  --c-stage-1-text: #a3947a;
+  --c-stage-2-text: #dfa856;
+  --c-stage-3-text: #e3bd6c;
+
+  /* ── 字体：不引 webfont，避免多一层 CDN 依赖 ────────────────── */
+  --font-mono: ui-monospace, 'Cascadia Mono', 'Consolas', 'Sarasa Mono SC', 'Noto Sans Mono SC', monospace;
   --font-body: 'Sarasa Gothic SC', '更纱黑体 SC', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
 
-  /* ── 交互人格：读数硬切，展开像舱盖开合 ─────────────────────── */
-  --t-hard: 120ms linear;
-  --t-hatch: 480ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  --t-warn: 2200ms ease-in-out;
+  /* ── 交互人格：读数硬切，舱盖开合慢 ─────────────────────────── */
+  --t-hard: 110ms linear;
+  --t-hatch: 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-warn: 2100ms ease-in-out;
 }
 
 html,
@@ -84,14 +88,51 @@ body {
   padding: 4px 0;
 }
 
-/* 低电量／高损耗／能源见底时的呼吸。系统偏好减弱动效时停用 */
+/* ── 蚀刻字：把字刻进金属的错觉 ───────────────────────────────── */
+.stencil {
+  letter-spacing: 0.26em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.85);
+}
+
+/* ── 警示斜纹：只用于警戒与告警 ───────────────────────────────── */
+.hazard-stripes {
+  background-image: repeating-linear-gradient(45deg, rgba(143, 74, 42, 0.45) 0 6px, rgba(0, 0, 0, 0) 6px 12px);
+}
+
+/* ── 铆钉：面板角落的凹陷圆点 ─────────────────────────────────── */
+.rivets {
+  position: relative;
+}
+
+.rivets::before,
+.rivets::after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--c-border-hot);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.rivets::before {
+  top: 4px;
+  left: 4px;
+}
+
+.rivets::after {
+  bottom: 4px;
+  right: 4px;
+}
+
 @keyframes pulse-danger {
   0%,
   100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.35;
+    opacity: 0.32;
   }
 }
 
@@ -104,10 +145,10 @@ body {
     transform: translateX(0);
   }
   50% {
-    transform: translateX(-0.6px);
+    transform: translateX(-0.7px);
   }
   52% {
-    transform: translateX(0.6px);
+    transform: translateX(0.7px);
   }
 }
 

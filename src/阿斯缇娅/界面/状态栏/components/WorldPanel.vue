@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { radiationBand } from '../constants';
+import Gauge from './Gauge.vue';
 
 /**
- * 世界面板：时间、区域、天气与辐射读数，加近期事务列表。
+ * 世界面板：时间、时段、区域、天气与辐射读数，加近期事务。
  *
  * 辐射分档的文案抄自变量更新规则.yaml，只作展示，不参与前端判定。
  */
@@ -27,57 +28,66 @@ const band = computed(() => radiationBand(props.radiation));
 </script>
 
 <template>
-  <section class="block">
-    <header class="block-head">
-      <i class="fa-solid fa-location-crosshairs" />
-      <span>世界</span>
-      <em class="hint">{{ region }}</em>
-    </header>
+  <div class="panel">
+    <!-- ── 时空读数 ── -->
+    <section class="block">
+      <header class="block-head">
+        <i class="fa-solid fa-compass" />
+        <span class="stencil">环境</span>
+        <em class="head-note">{{ region }}</em>
+      </header>
 
-    <dl class="facts">
-      <div>
-        <dt>时间</dt>
-        <dd class="mono">
-          {{ parts.date }}
-          <span class="clock">{{ parts.clock }}</span>
-        </dd>
-      </div>
-      <div>
-        <dt>时段</dt>
-        <dd>{{ period }}</dd>
-      </div>
-      <div>
-        <dt>天气</dt>
-        <dd>{{ weather }}</dd>
-      </div>
-      <div>
-        <dt>辐射读数</dt>
-        <dd class="mono" :style="{ color: band.color }">{{ radiation }}</dd>
-      </div>
-      <div class="wide">
-        <dt>辐射分档</dt>
-        <dd :style="{ color: band.color }">{{ band.label }}</dd>
-      </div>
-    </dl>
+      <dl class="readouts">
+        <div>
+          <dt>日期</dt>
+          <dd class="mono">{{ parts.date }}</dd>
+        </div>
+        <div>
+          <dt>时刻</dt>
+          <dd class="mono gold">{{ parts.clock }}</dd>
+        </div>
+        <div>
+          <dt>时段</dt>
+          <dd>{{ period }}</dd>
+        </div>
+        <div>
+          <dt>天气</dt>
+          <dd>{{ weather }}</dd>
+        </div>
+      </dl>
 
-    <div class="affairs">
-      <div class="affairs-head">
+      <div class="gauges">
+        <Gauge label="辐射读数" :value="radiation" tone="rust" :threshold="50" :lower="false" />
+      </div>
+      <p class="band" :style="{ color: band.color }">{{ band.label }}</p>
+    </section>
+
+    <!-- ── 近期事务 ── -->
+    <section class="block">
+      <header class="block-head">
         <i class="fa-solid fa-clipboard-list" />
-        <span>近期事务</span>
-        <em>{{ affairs.length }} 条</em>
-      </div>
-      <ul v-if="affairs.length" class="affairs-list">
+        <span class="stencil">近期事务</span>
+        <em class="head-note">{{ affairs.length }} 条</em>
+      </header>
+
+      <ul v-if="affairs.length" class="ledger">
         <li v-for="(a, i) in affairs" :key="i">
           <span class="no">{{ String(i + 1).padStart(2, '0') }}</span>
           <span class="text">{{ a }}</span>
         </li>
       </ul>
       <p v-else class="empty">没有未结的事务。</p>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
 
 <style scoped>
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 .block {
   display: flex;
   flex-direction: column;
@@ -88,12 +98,18 @@ const band = computed(() => radiationBand(props.radiation));
   display: flex;
   align-items: center;
   gap: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--c-border);
   color: var(--c-text-muted);
   font-size: 10px;
-  letter-spacing: 0.12em;
 }
 
-.hint {
+.block-head i {
+  font-size: 9px;
+  color: var(--c-border-hot);
+}
+
+.head-note {
   margin-left: auto;
   color: var(--c-primary);
   font-size: 10px;
@@ -101,32 +117,29 @@ const band = computed(() => radiationBand(props.radiation));
   letter-spacing: 0.04em;
 }
 
-.facts {
+.readouts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
-  gap: 5px 10px;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 6px 10px;
   margin: 0;
   padding: 8px 9px;
   background: var(--c-surface-raised);
+  border-left: 2px solid var(--c-border-hot);
 }
 
-.facts > div {
+.readouts > div {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.facts .wide {
-  grid-column: 1 / -1;
-}
-
-.facts dt {
+.readouts dt {
   color: var(--c-text-muted);
   font-size: 9px;
   letter-spacing: 0.06em;
 }
 
-.facts dd {
+.readouts dd {
   margin: 0;
   font-size: 11px;
   line-height: 1.5;
@@ -137,35 +150,23 @@ const band = computed(() => radiationBand(props.radiation));
   font-variant-numeric: tabular-nums;
 }
 
-.clock {
-  margin-left: 5px;
+.gold {
   color: var(--c-amber-text);
 }
 
-.affairs {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-top: 6px;
-  border-top: 1px solid var(--c-border);
+.gauges {
+  padding: 8px 9px;
+  background: var(--c-surface-raised);
+  border-left: 2px solid var(--c-border-hot);
 }
 
-.affairs-head {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--c-text-muted);
-  font-size: 9px;
-  letter-spacing: 0.06em;
+.band {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 0.04em;
 }
 
-.affairs-head em {
-  margin-left: auto;
-  font-style: normal;
-  font-variant-numeric: tabular-nums;
-}
-
-.affairs-list {
+.ledger {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -174,7 +175,7 @@ const band = computed(() => radiationBand(props.radiation));
   list-style: none;
 }
 
-.affairs-list li {
+.ledger li {
   display: flex;
   align-items: baseline;
   gap: 7px;
@@ -182,10 +183,11 @@ const band = computed(() => radiationBand(props.radiation));
 
 .no {
   flex: none;
-  color: var(--c-text-muted);
+  color: var(--c-border-hot);
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
 }
 
 .text {

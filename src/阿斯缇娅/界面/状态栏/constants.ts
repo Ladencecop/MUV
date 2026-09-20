@@ -5,35 +5,20 @@
  * 变量读写在 store.ts，阈值判定在 App.vue 与各组件内联。
  */
 
-/**
- * 关系阶段名：陌生期 / 熟悉期 / 依赖期 / 深爱期。
- *
- * **字面必须与 schema.ts、EJS 条件、变量更新规则完全一致，勿改字。**
- * `阿斯缇娅.关系阶段` 是字符串枚举，世界书里靠 === 比较它做段落控制。
- */
+/** 关系阶段名。字面必须与 schema.ts、EJS 条件、变量更新规则完全一致，勿改字 */
 export const STAGE_NAMES = ['陌生期', '熟悉期', '依赖期', '深爱期'] as const;
 
-/** 阶段色阶：暗铁 → 冷灰 → 琥珀 → 亮金。明度本身就是解冻进度 */
-export const STAGE_COLORS = [
-  'var(--c-stage-0)',
-  'var(--c-stage-1)',
-  'var(--c-stage-2)',
-  'var(--c-stage-3)',
-] as const;
-
-/** 阶段文字色阶。深色版在近黑底上当文字读不清，文字一律走这一组 */
-export const STAGE_TEXT_COLORS = [
-  'var(--c-stage-0-text)',
-  'var(--c-stage-1-text)',
-  'var(--c-stage-2-text)',
-  'var(--c-stage-3-text)',
-] as const;
+/**
+ * 阶段色阶后缀：冷铁 → 灰铜 → 锈金 → 亮金。明度本身就是解冻进度。
+ *
+ * 存的是**类名后缀**而不是 CSS 字符串 —— 组件一律 `stage-${后缀}` 上色，
+ * 避免模板里出现 `var(--…)` 字符串触发 Vue 的同名简写解析。
+ */
+export const STAGE_KEYS = ['iron', 'brass', 'rustgold', 'gold'] as const;
 
 /**
- * 阶段阶梯（展开区展示用）。
- *
- * `gate` 抄自 schema.ts 与变量更新规则.yaml 的推进条件，只作展示，
- * **不参与任何前端判定** —— 阶段推进与否由 AI 依剧情决定，界面不许自己算。
+ * 阶段阶梯。`gate` 抄自 schema.ts 与变量更新规则.yaml 的推进条件，只作展示，
+ * 不参与任何前端判定——阶段推进与否由 AI 依剧情决定，界面不许自己算。
  */
 export const STAGE_GATES = [
   { name: '陌生期', gate: '故事起点', note: '把你当需要评估的对象，先观察后开口。' },
@@ -42,18 +27,26 @@ export const STAGE_GATES = [
   { name: '深爱期', gate: '好感度 ≥ 80 · 信任度 ≥ 70', note: '已发生明确的关系确认。' },
 ] as const;
 
-/** 亲密状态三档。字面与 schema.ts 一致 */
+/** 身体边界三档。字面与 schema.ts 的 亲密.状态 一致 */
 export const INTIMACY_STATES = ['尚未越界', '已有身体接触', '亲密关系'] as const;
 
-/** 亲密状态的门槛说明，抄自 schema.ts，只作展示 */
-export const INTIMACY_GATES: Record<string, string> = {
-  尚未越界: '没有任何超过必要的身体接触',
-  已有身体接触: '需亲密度 ≥ 20',
-  亲密关系: '需亲密度 ≥ 50',
+/** 身体边界的可读释义，用在界面上替掉第三个重复刻度 */
+export const INTIMACY_BOUNDARIES: Record<string, string> = {
+  尚未越界: '只允许必要的接触。递东西时她会避开手指，护理前后都要先问一句。',
+  已有身体接触: '可以抱，可以靠，充电时手可以留在她肩上。她不会推开，也不会承认自己没推。',
+  亲密关系: '已经没有需要问的了。她仍然嘴硬，但身体不再设防。',
 };
 
-/** 生理状态。字面与 schema.ts 一致 */
-export const BODY_STATES = ['常态', '力竭', '发热', '受孕中', '孕期'] as const;
+/** 生理状态。字面与 schema.ts 的 身体.生理状态 一致（怀孕只写在子宫下） */
+export const BODY_STATES = ['常态', '休眠', '性爱', '力竭'] as const;
+
+/** 生理状态的释义，界面上给出一句可读说明 */
+export const BODY_STATE_NOTES: Record<string, string> = {
+  常态: '清醒，一切正常。',
+  休眠: '睡眠中，或电量归零后的停机保护。此时她不省人事。',
+  性爱: '正在性事中，或处在余韵里。机体温度升高，反应变敏感。',
+  力竭: '电量或机体损耗触发的虚弱。动作与反应明显迟缓。',
+};
 
 /** 子宫状态四档。字面与 schema.ts 一致，逐级不可跳 */
 export const WOMB_STATES = ['未激活', '待着床', '已着床', '孕育中'] as const;
@@ -61,7 +54,7 @@ export const WOMB_STATES = ['未激活', '待着床', '已着床', '孕育中'] 
 /** 着床深度。字面与 schema.ts 一致 */
 export const DEPTHS = ['无', '浅', '中', '深'] as const;
 
-/** 四个可解锁模块。字面与 schema.ts 的「已解锁设施」说明一致 */
+/** 四个可解锁模块。字面与 schema.ts 的 已解锁设施 说明一致 */
 export const FACILITIES = ['净水', '温室', '工坊', '医疗舱'] as const;
 
 /** 当前区域，顺序与 schema.ts 的枚举一致 */
@@ -77,12 +70,13 @@ export const RADIATION_BANDS = [
 /** 电量分档。30 是 schema.ts 写死的阈值，低于它她会明显变钝 */
 export const POWER_BANDS = [
   { min: 30, label: '行动与情绪稳定' },
-  { min: 0, label: '动作变慢、反应变钝、更倔' },
+  { min: 15, label: '反应变钝，会自己找活干来掩饰想充电' },
+  { min: 0, label: '力竭：动作与反应明显迟缓' },
 ] as const;
 
 /** 机体损耗分档。60 是变量更新规则里的维护需求触发线 */
 export const WEAR_BANDS = [
-  { min: 60, label: '有可听的机械声，她开始回避战斗' },
+  { min: 60, label: '出现可听的机械声，握力下降，她开始回避战斗' },
   { min: 30, label: '一侧肩膀的动作幅度变小' },
   { min: 0, label: '动作无声，外壳没有痕迹' },
 ] as const;
@@ -94,14 +88,16 @@ export const ENERGY_BANDS = [
   { min: 0, label: '只够基础照明与她的最低供能' },
 ] as const;
 
-/** 警戒阈值，与 design-spec.md 的 UI 设计段一致 */
+/** 警戒阈值，与 cards/阿斯缇娅/ui-design.md 一致 */
 export const THRESHOLDS = {
-  /** 电量低于此值转锈红，指示点呼吸 */
+  /** 电量低于此值转红灯、指示点呼吸 */
   power: 30,
-  /** 机体损耗高于此值转锈红 */
+  /** 机体损耗高于此值转红灯 */
   wear: 60,
-  /** 能源储备低于此值转锈红 */
+  /** 能源储备低于此值转红灯 */
   energy: 15,
+  /** 辐射读数高于此值转红灯 */
+  radiation: 50,
 } as const;
 
 /** 取分档标签 */
