@@ -37,9 +37,20 @@ export const INTIMACY_BOUNDARIES: Record<string, string> = {
   亲密关系: '已经没有需要问的了。她仍然嘴硬，但身体不再设防。',
 };
 
+/**
+ * 誓约两档。字面与 schema.ts 的 阿斯缇娅.誓约.状态 一致 —— 只有两档，
+ * 因为誓约在她的理解里是一次性的事：没戴上，和戴上了。
+ */
+export const OATH_STATES = ['未缔结', '已缔结'] as const;
+
+/** 誓约状态的可读释义，显示在素戒旁边 */
+export const OATH_NOTES: Record<string, string> = {
+  未缔结: '素戒还空着。她会认出戒指是什么，然后先问你一句。',
+  已缔结: '你的标识刻在她的底层代码里。这件事不可逆，也不可复制。',
+};
+
 /** 生理状态。字面与 schema.ts 的 身体.生理状态 一致（怀孕只写在子宫下） */
 export const BODY_STATES = ['常态', '休眠', '性爱', '力竭'] as const;
-
 /** 生理状态的释义，界面上给出一句可读说明 */
 export const BODY_STATE_NOTES: Record<string, string> = {
   常态: '清醒，一切正常。',

@@ -2,12 +2,13 @@
 import { computed } from 'vue';
 import { BODY_STATE_NOTES, INTIMACY_BOUNDARIES, INTIMACY_STATES, STAGE_GATES, STAGE_KEYS } from '../constants';
 import Gauge from './Gauge.vue';
+import OathSection from './OathSection.vue';
 
 /**
  * 阿斯缇娅面板：关系与身体。
  *
- * 三块内容，依次是亲密（数值 + 身体边界）、关系阶段阶梯、她的机体。
- * 机体里包含小穴与子宫 —— 它们是她机体状态的一部分，不单独成区。
+ * 区块依次是：亲密（数值 + 身体边界）、誓约（素戒与花瓣）、关系阶段阶梯、她的机体、
+ * 小穴与子宫。机体的两处接口不单独成区 —— 它们是她机体状态的一部分。
  */
 const props = defineProps<{
   stage: string;
@@ -15,6 +16,8 @@ const props = defineProps<{
   trust: number;
   intimacy: number;
   intimacyState: string;
+  oathState: string;
+  oathDate: string;
   power: number;
   wear: number;
   bodyState: string;
@@ -73,6 +76,9 @@ const bodyNote = computed(() => BODY_STATE_NOTES[props.bodyState] ?? '');
 
       <p class="boundary">{{ boundary }}</p>
     </section>
+
+    <!-- ── 誓约 ── -->
+    <OathSection :state="oathState" :date="oathDate" :intimacy="intimacy" />
 
     <!-- ── 关系阶段 ── -->
     <section class="block">

@@ -24,7 +24,7 @@ const her = computed(() => data.value.阿斯缇娅);
 const car = computed(() => data.value.基地车);
 const world = computed(() => data.value.世界);
 
-/* ── 关系 ── */
+/* ── 誓约 ── */
 const stage = computed(() => String(her.value.关系阶段));
 const stageIndex = computed(() => {
   const i = (STAGE_GATES as readonly { name: string }[]).findIndex((s) => s.name === stage.value);
@@ -41,6 +41,9 @@ const energy = computed(() => Number(car.value.能源储备) || 0);
 const intimacy = computed(() => Number(her.value.亲密.数值) || 0);
 const intimacyState = computed(() => String(her.value.亲密.状态));
 const bodyState = computed(() => String(her.value.身体.生理状态));
+/* 誓约两档 + 缔结日期。旧存档没有这个字段时退回未缔结，界面不报错 */
+const oathState = computed(() => String(her.value.誓约?.状态 ?? '未缔结'));
+const oathDate = computed(() => String(her.value.誓约?.日期 ?? ''));
 
 const powerAlert = computed(() => power.value < THRESHOLDS.power);
 const wearAlert = computed(() => wear.value > THRESHOLDS.wear);
@@ -163,6 +166,8 @@ const worldNote = computed(
           :trust="trust"
           :intimacy="intimacy"
           :intimacy-state="intimacyState"
+          :oath-state="oathState"
+          :oath-date="oathDate"
           :power="power"
           :wear="wear"
           :body-state="bodyState"
