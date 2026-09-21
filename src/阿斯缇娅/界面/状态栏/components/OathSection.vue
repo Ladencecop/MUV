@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { OATH_NOTES, OATH_STATES } from '../constants';
 import { useLocalStorage } from '@vueuse/core';
+import { OATH_NOTES, OATH_STATES } from '../constants';
 
 /**
- * 誓约：一枚素戒与一圈花瓣。
+ * 誓约：一枚素戒，与铺在这一段背景里的花瓣。
  *
- * 这个分区块刻意不用统一的琥珀／锈色 —— 誓约是整个界面里唯一一处暖粉色，
- * 因为它是她身上唯一一件与废土无关的东西。已缔结之后环上有一点微光，
- * 花瓣按亲密度长出片数：还没有身体接触时是光秃的素戒。
+ * 素戒的形状是「十二边形外轮廓 + 正圆内壁」。它必须画成一条填充的环带，
+ * 而不是两条描边 —— 描边只能多边形，内壁会跟着变成十二边形。做法是在同一条
+ * path 里写两个子路径（外十二边形 + 内正圆），靠 fill-rule: evenodd 挖出中间的孔。
+ *
+ * 花瓣是背景装饰，不是挂在戒指上的东西：它们散在这一段的四角与边缘，低透明度，
+ * 片数按亲密度长。未缔结时压暗到几乎看不见。
  *
  * 只读：状态与日期都来自 MVU 变量，界面不提供任何写回入口。
  */
@@ -26,26 +29,86 @@ const props = withDefaults(
 
 const open = useLocalStorage('阿斯缇娅:sb:oath', false);
 
+/* ── 素戒的几何：外半径 23 的十二边形，内圆半径 16，环带 7px ── */
+const CX = 26;
+const R_OUT = 23;
+const R_IN = 16;
+
+/** 十二边形顶点：角度从正上方起算，避免出现一条水平的顶边 */
+const outerPath = computed(() => {
+  const pts: string[] = [];
+  for (let i = 0; i < 12; i++) {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / 12;
+    pts.push(`${(CX + R_OUT * Math.cos(a)).toFixed(2)} ${(CX + R_OUT * Math.sin(a)).toFixed(2)}`);
+  }
+  return `M ${pts.join(' L ')} Z`;
+});
+
+/** 正圆：两段半圆弧拼成 */
+const innerPath = computed(
+  () =>
+    `M ${CX - R_IN} ${CX} A ${R_IN} ${R_IN} 0 1 0 ${CX + R_IN} ${CX} ` +
+    `A ${R_IN} ${R_IN} 0 1 0 ${CX - R_IN} ${CX} Z`,
+);
+
+const ringPath = computed(() => `${outerPath.value} ${innerPath.value}`);
+
 /** 收敛到合法状态，防止 AI 写进别的字面导致样式整块丢失 */
-const state = computed(() => ((OATH_STATES as readonly string[]).includes(props.state) ? props.state : '未缔结'));
+const state = computed(() =>
+  (OATH_STATES as readonly string[]).includes(props.state) ? props.state : '未缔结',
+);
 const sealed = computed(() => state.value === '已缔结');
 
-/** 花瓣片数：素戒到满环。0 片是没有身体接触，6 片是亲密关系 */
+/**
+ * 花瓣的落位。前几个贴四角与边缘，越往后越往中间散。
+ * 写成静态表而不是随机：同一个存档每次渲染的位置必须一致。
+ */
+const PETAL_SLOTS = [
+  { w: 62, h: 62, top: '-24px', left: '-16px', rot: 22 },
+  { w: 52, h: 52, bottom: '-24px', right: '-12px', rot: -30 },
+  { w: 34, h: 34, top: '54%', right: '9%', rot: 58 },
+  { w: 40, h: 40, bottom: '-16px', left: '26%', rot: -14 },
+  { w: 28, h: 28, top: '10%', right: '30%', rot: 46 },
+  { w: 32, h: 32, top: '46%', left: '12%', rot: -52 },
+  { w: 26, h: 26, top: '-14px', left: '38%', rot: 34 },
+  { w: 30, h: 30, bottom: '6%', right: '38%', rot: -22 },
+  { w: 24, h: 24, top: '30%', left: '46%', rot: 62 },
+];
+
+/** 花瓣片数：未缔结不画，已缔结按亲密度长 */
 const petals = computed(() => {
-  if (!sealed.value) {
-    return state.value === '未缔结' ? 0 : 2;
-  }
+  if (!sealed.value) return 0;
   const n = Number(props.intimacy) || 0;
-  return n >= 60 ? 6 : n >= 40 ? 4 : n >= 20 ? 2 : 3;
+  return n >= 60 ? 9 : n >= 40 ? 6 : n >= 20 ? 3 : 2;
 });
+
+/** 每片花瓣的定位。用内联样式只放几何，颜色一律走 CSS 类 */
+const petalStyle = (i: number) => {
+  const s = PETAL_SLOTS[i % PETAL_SLOTS.length];
+  const pos: string[] = [];
+  if (s.top) pos.push(`top:${s.top}`);
+  if (s.bottom) pos.push(`bottom:${s.bottom}`);
+  if (s.left) pos.push(`left:${s.left}`);
+  if (s.right) pos.push(`right:${s.right}`);
+  return [
+    `width:${s.w}px`,
+    `height:${s.h}px`,
+    ...pos,
+    `transform:rotate(${s.rot}deg)`,
+  ].join(';');
+};
 
 const note = computed(() => OATH_NOTES[state.value] ?? '');
 const headNote = computed(() => (sealed.value && props.date ? `已缔结 · ${props.date}` : state.value));
-const flowerClass = computed(() => (sealed.value ? 'oath-sealed' : state.value === '未缔结' ? 'oath-none' : 'oath-soft'));
 </script>
 
 <template>
-  <section class="block oath" :class="flowerClass">
+  <section class="oath" :class="sealed ? 'oath-sealed' : 'oath-none'">
+    <!-- 背景花瓣：贴在这一段的底上，不参与交互 -->
+    <div class="deco" aria-hidden="true">
+      <span v-for="i in petals" :key="i" class="petal" :style="petalStyle(i - 1)" />
+    </div>
+
     <button class="block-head" type="button" @click="open = !open">
       <i class="fa-solid fa-ring" />
       <span class="stencil">誓约</span>
@@ -53,17 +116,10 @@ const flowerClass = computed(() => (sealed.value ? 'oath-sealed' : state.value =
       <i class="fa-solid fa-chevron-down caret" :class="{ up: open }" />
     </button>
 
-    <!-- 素戒与花瓣 -->
     <div class="flower">
-      <span class="ring">
-        <span class="gem" />
-        <span
-          v-for="i in petals"
-          :key="i"
-          class="petal"
-          :style="{ transform: `rotate(${30 + (i - 1) * (360 / petals)}deg) translateY(-10px)` }"
-        />
-      </span>
+      <svg class="ring" width="56" height="56" viewBox="0 0 52 52">
+        <path :d="ringPath" fill-rule="evenodd" />
+      </svg>
       <p class="flower-note">{{ note }}</p>
     </div>
 
@@ -93,13 +149,45 @@ const flowerClass = computed(() => (sealed.value ? 'oath-sealed' : state.value =
 </template>
 
 <style scoped>
-.block {
+.oath {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: hidden;
+  padding: 9px 11px 10px;
+  background: var(--c-surface-raised);
+  border-left: 2px solid var(--oath);
 }
 
-/* 标题行整行可点，与折叠舱盖保持同一套手感 */
+/* ── 背景花瓣 ── */
+.deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.petal {
+  position: absolute;
+  background: var(--oath);
+  /* 两个圆角对角 + 两个近直角，才是花瓣的样子 */
+  border-radius: 70% 8% 70% 8%;
+  opacity: 0.17;
+  transition: opacity var(--t-hatch);
+}
+
+.oath-none .petal {
+  opacity: 0.07;
+}
+
+/* 正文压在花瓣上面 */
+.block-head,
+.flower,
+.bay {
+  position: relative;
+}
+
+/* ── 标题行 ── */
 .block-head {
   display: flex;
   align-items: center;
@@ -145,56 +233,20 @@ const flowerClass = computed(() => (sealed.value ? 'oath-sealed' : state.value =
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 9px;
-  background: var(--c-surface-raised);
-  border-left: 2px solid var(--oath);
 }
 
 .ring {
-  position: relative;
   flex: none;
-  width: 26px;
-  height: 26px;
-  border: 2px solid var(--oath);
-  border-radius: 50%;
+  display: block;
 }
 
-/* 环上的小石：一枚素戒只留这一点装饰 */
-.gem {
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  margin-left: -2px;
-  background: var(--oath-text);
-  transform: rotate(45deg);
+.ring path {
+  fill: var(--oath);
 }
 
-/* 缔结之后小石走一条很慢的呼吸，比警戒灯的节奏慢一半 */
-.oath-sealed .gem {
-  animation: glow 3.4s ease-in-out infinite;
-}
-
-/* ── 花瓣：围成一圈，长在环上 ── */
-.petal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  margin: -4px 0 0 -4px;
-  background: var(--oath);
-  border-radius: 50% 0 50% 0;
-  opacity: 0.5;
-  transform-origin: center;
-  transition:
-    opacity var(--t-hatch),
-    background var(--t-hatch);
-}
-
-.oath-sealed .petal {
-  opacity: 0.92;
+/* 呼吸加在整个戒指上，环与内壁一起明暗；两档都走，强度不同 */
+.ring {
+  animation: breathe 3.4s ease-in-out infinite;
 }
 
 .flower-note {
@@ -255,22 +307,17 @@ const flowerClass = computed(() => (sealed.value ? 'oath-sealed' : state.value =
 .bay-leave-to {
   opacity: 0;
 }
-</style>
 
-<style scoped>
-/* ── 三档粉色：只改令牌，不改结构 ── */
+/* ── 两档粉色：只改变量，不动结构 ── */
 .oath-none {
   --oath: var(--c-oath-dim);
   --oath-text: var(--c-text-muted);
-}
-
-.oath-soft {
-  --oath: var(--c-oath-soft);
-  --oath-text: var(--c-oath-soft-text);
+  --oath-glow: 3px;
 }
 
 .oath-sealed {
   --oath: var(--c-oath);
   --oath-text: var(--c-oath-text);
+  --oath-glow: 6px;
 }
 </style>

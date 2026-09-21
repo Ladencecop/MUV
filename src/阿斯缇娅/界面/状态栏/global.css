@@ -162,16 +162,18 @@ body {
   }
 }
 
-/* 誓约环上那一点微光。刻意比警戒灯慢：它不提示任何危险 */
-@keyframes glow {
+/* 素戒的呼吸：整枚戒指一起明暗，并透出一点外发光。
+   发光半径走 --oath-glow，两档强度不同（已缔结 6px、未缔结 3px）； 
+   未设变量时退回空串，drop-shadow 会退化成「无模糊的纯色描边」，仍然有效。 */
+@keyframes breathe {
   0%,
   100% {
-    opacity: 0.55;
-    transform: rotate(45deg) scale(1);
+    opacity: 0.84;
+    filter: drop-shadow(0 0 0 transparent);
   }
   50% {
     opacity: 1;
-    transform: rotate(45deg) scale(1.45);
+    filter: drop-shadow(0 0 var(--oath-glow, 0px) var(--oath));
   }
 }
 
