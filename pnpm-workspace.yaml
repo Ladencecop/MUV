@@ -2,4 +2,7 @@ allowBuilds:
   '@parcel/watcher': true
   unrs-resolver: true
   vue-demi: true
+<<<<<<< HEAD
 minimumReleaseAge: 0
+=======
+>>>>>>> bca3799e3ab288f5d52b3e2777478f654fc5e816
